@@ -29,6 +29,7 @@ function Expenses() {
     queryKey: ['expenses-list'],
     queryFn: getExpenses
   })
+
   return (
     <Table className={'max-w-3xl mx-auto'}>
       <TableCaption>A list of your recent invoices.</TableCaption>
@@ -57,7 +58,7 @@ function Expenses() {
             ))}
           </>
         ) : (
-          expenses?.expenses.map(expense => (
+          expenses?.expense.map(expense => (
             <TableRow key={expense.id}>
               <TableCell className="font-medium">{expense.id}</TableCell>
               <TableCell>{expense.title}</TableCell>
