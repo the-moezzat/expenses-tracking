@@ -11,29 +11,14 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as ProfileImport } from './routes/_auth/profile.tsx'
-import { Route as ExpensesImport } from './routes/expenses'
-import { Route as CreateImport } from './routes/create'
 import { Route as AboutImport } from './routes/about'
 import { Route as AuthImport } from './routes/_auth'
-import { Route as IndexImport } from './routes/index'
+import { Route as AuthIndexImport } from './routes/_auth/index'
+import { Route as AuthProfileImport } from './routes/_auth/profile'
+import { Route as AuthExpensesImport } from './routes/_auth/expenses'
+import { Route as AuthCreateImport } from './routes/_auth/create'
 
 // Create/Update Routes
-
-const ProfileRoute = ProfileImport.update({
-  path: '/profile',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const ExpensesRoute = ExpensesImport.update({
-  path: '/expenses',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const CreateRoute = CreateImport.update({
-  path: '/create',
-  getParentRoute: () => rootRoute,
-} as any)
 
 const AboutRoute = AboutImport.update({
   path: '/about',
@@ -45,22 +30,30 @@ const AuthRoute = AuthImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const IndexRoute = IndexImport.update({
+const AuthIndexRoute = AuthIndexImport.update({
   path: '/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => AuthRoute,
+} as any)
+
+const AuthProfileRoute = AuthProfileImport.update({
+  path: '/profile',
+  getParentRoute: () => AuthRoute,
+} as any)
+
+const AuthExpensesRoute = AuthExpensesImport.update({
+  path: '/expenses',
+  getParentRoute: () => AuthRoute,
+} as any)
+
+const AuthCreateRoute = AuthCreateImport.update({
+  path: '/create',
+  getParentRoute: () => AuthRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
-    }
     '/_auth': {
       id: '/_auth'
       path: ''
@@ -75,26 +68,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutImport
       parentRoute: typeof rootRoute
     }
-    '/create': {
-      id: '/create'
+    '/_auth/create': {
+      id: '/_auth/create'
       path: '/create'
       fullPath: '/create'
-      preLoaderRoute: typeof CreateImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof AuthCreateImport
+      parentRoute: typeof AuthImport
     }
-    '/expenses': {
-      id: '/expenses'
+    '/_auth/expenses': {
+      id: '/_auth/expenses'
       path: '/expenses'
       fullPath: '/expenses'
-      preLoaderRoute: typeof ExpensesImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof AuthExpensesImport
+      parentRoute: typeof AuthImport
     }
-    '/profile': {
-      id: '/profile'
+    '/_auth/profile': {
+      id: '/_auth/profile'
       path: '/profile'
       fullPath: '/profile'
-      preLoaderRoute: typeof ProfileImport
-      parentRoute: typeof rootRoute
+      preLoaderRoute: typeof AuthProfileImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/': {
+      id: '/_auth/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof AuthIndexImport
+      parentRoute: typeof AuthImport
     }
   }
 }
@@ -102,11 +102,13 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 export const routeTree = rootRoute.addChildren({
-  IndexRoute,
+  AuthRoute: AuthRoute.addChildren({
+    AuthCreateRoute,
+    AuthExpensesRoute,
+    AuthProfileRoute,
+    AuthIndexRoute,
+  }),
   AboutRoute,
-  CreateRoute,
-  ExpensesRoute,
-  ProfileRoute,
 })
 
 /* prettier-ignore-end */
@@ -117,31 +119,37 @@ export const routeTree = rootRoute.addChildren({
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/",
         "/_auth",
-        "/about",
-        "/create",
-        "/expenses",
-        "/profile"
+        "/about"
       ]
     },
-    "/": {
-      "filePath": "index.tsx"
-    },
     "/_auth": {
-      "filePath": "_auth.tsx"
+      "filePath": "_auth.tsx",
+      "children": [
+        "/_auth/create",
+        "/_auth/expenses",
+        "/_auth/profile",
+        "/_auth/"
+      ]
     },
     "/about": {
       "filePath": "about.tsx"
     },
-    "/create": {
-      "filePath": "create.tsx"
+    "/_auth/create": {
+      "filePath": "_auth/create.tsx",
+      "parent": "/_auth"
     },
-    "/expenses": {
-      "filePath": "expenses.tsx"
+    "/_auth/expenses": {
+      "filePath": "_auth/expenses.tsx",
+      "parent": "/_auth"
     },
-    "/profile": {
-      "filePath": "profile.tsx"
+    "/_auth/profile": {
+      "filePath": "_auth/profile.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/": {
+      "filePath": "_auth/index.tsx",
+      "parent": "/_auth"
     }
   }
 }

@@ -15,7 +15,9 @@ function Profile() {
   return (
     <div className="p-2">
       <h1>Hello {data.given_name}</h1>
-      <Button variant={'destructive'}>Logout</Button>
+      <a href="/api/logout">
+        <Button variant={'destructive'}>Logout</Button>
+      </a>
     </div>
   )
 }
